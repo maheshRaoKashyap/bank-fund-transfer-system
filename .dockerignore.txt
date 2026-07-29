@@ -1,5 +1,5 @@
-target
-.git
-.idea
-.gitignore
-README.md
+target/
+.git/
+.idea/
+*.iml
+*.log
