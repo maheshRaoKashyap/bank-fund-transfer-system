@@ -1,0 +1,516 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+
+    <title>Bank Fund Transfer System</title>
+
+    <style>
+
+        body{
+        font-family: Arial, Helvetica, sans-serif;
+        background:#edf3fa;
+        margin:0;
+        padding:0;
+    }
+    .header{
+
+    background:#1565c0;
+    color:white;
+    padding:25px;
+
+    text-align:center;
+
+}
+
+.header{
+    background:#1565c0;
+    color:white;
+    padding:25px;
+    text-align:center;
+}
+
+.header p{
+
+    margin-top:10px;
+    color:#e8f1ff;
+
+}
+
+    .container{
+        width:95%;
+        max-width:1500px;
+        margin:25px auto;
+        background:white;
+        padding:30px;
+        border-radius:12px;
+        box-shadow:0 5px 15px rgba(0,0,0,0.15);
+    }
+
+    .dashboard{
+
+    display:grid;
+    grid-template-columns:1fr 1fr;
+    gap:20px;
+    margin-top:25px;
+
+}
+
+.full-width{
+
+    grid-column:1 / span 2;
+
+}
+
+.header{
+    background:#1565c0;
+    color:white;
+    padding:25px;
+    text-align:center;
+}
+
+    .subtitle{
+        text-align:center;
+        color:gray;
+        margin-bottom:25px;
+    }
+
+.card{
+
+    background:white;
+    border-radius:10px;
+    padding:20px;
+    border:1px solid #d6e4f0;
+    box-shadow:0 2px 8px rgba(0,0,0,0.08);
+
+}
+
+
+.card h3{
+
+    margin-top:0;
+    margin-bottom:18px;
+    color:#1565c0;
+    border-bottom:2px solid #e8eef6;
+    padding-bottom:10px;
+
+}
+input{
+
+    width:100%;
+    padding:11px;
+    margin-top:6px;
+    margin-bottom:15px;
+
+    border:1px solid #c5d5e6;
+    border-radius:6px;
+
+    box-sizing:border-box;
+
+}
+button{
+
+    width:100%;
+    padding:12px;
+    border:none;
+    border-radius:6px;
+    cursor:pointer;
+
+    background:#1565c0;
+    color:white;
+
+    font-size:15px;
+    font-weight:bold;
+
+    transition:0.3s;
+
+}
+
+button:hover{
+
+    background:#0d47a1;
+
+}
+
+  table{
+
+    width:100%;
+    border-collapse:collapse;
+    margin-top:15px;
+
+}
+
+th{
+
+    background:#1565c0;
+    color:white;
+    padding:14px;
+
+}
+
+td{
+
+    padding:12px;
+    border-bottom:1px solid #ddd;
+
+}
+
+tr:nth-child(even){
+
+    background:#f8fbff;
+
+}
+
+tr:hover{
+
+    background:#e3f2fd;
+
+}
+
+    th{
+        background:#1976d2;
+        color:white;
+    }
+
+    th,td{
+        padding:10px;
+        text-align:center;
+    }
+
+    .success{
+        color:green;
+        font-weight:bold;
+    }
+
+    .error{
+        color:red;
+        font-weight:bold;
+    }
+
+    .footer{
+
+    text-align:center;
+    margin-top:40px;
+    padding:20px;
+    color:#666;
+    font-size:14px;
+
+}
+.success{
+
+    background:#d4edda;
+    color:#155724;
+    padding:15px;
+    border-radius:6px;
+    margin-bottom:20px;
+
+}
+
+.error{
+
+    background:#f8d7da;
+    color:#721c24;
+    padding:15px;
+    border-radius:6px;
+    margin-bottom:20px;
+
+}
+    </style>
+
+</head>
+
+<body>
+<div class="header">
+
+    <h1>🏦 Bank Fund Transfer System</h1>
+
+
+    <p>
+        Simple Banking Application using Spring Boot, Thymeleaf & H2 Database
+    </p>
+
+</div>
+
+<div class="container">
+    <div class="dashboard">
+
+
+
+    <!-- Success Message -->
+        <p class="success"
+       th:if="${message}"
+       th:text="${message}">
+    </p>
+
+    <!-- Error Message -->
+        <p class="error"       th:if="${error}"
+       th:text="${error}">
+    </p>
+
+    <!-- Create Account -->
+        <div class="card">
+
+        <h3>➕ Create Account</h3>
+
+    <form th:action="@{/createAccount}"
+          method="post"
+          th:object="${accountRequest}">
+
+        <label>Account Holder Name</label>
+
+        <input
+                type="text"
+                th:field="*{accountHolderName}"
+                placeholder="Enter Name">
+
+        <p style="color:red"
+           th:if="${#fields.hasErrors('accountHolderName')}"
+           th:errors="*{accountHolderName}">
+        </p>
+
+        <label>Initial Balance</label>
+
+        <input
+                type="number"
+                step="0.01"
+                th:field="*{balance}"
+                placeholder="Enter Balance">
+
+        <p style="color:red"
+           th:if="${#fields.hasErrors('balance')}"
+           th:errors="*{balance}">
+        </p>
+
+        <button type="submit">
+            Create Account
+        </button>
+
+
+    </form>
+
+    <hr>
+
+    <!-- Search Account -->
+
+        <div class="card">
+
+            <h3>🔍 Search Account</h3>
+
+    <form action="/search" method="get">
+
+
+        <label>Search Account By ID</label>
+
+        <input
+                type="number"
+                name="id"
+                placeholder="Enter Account ID">
+
+        <button type="submit">
+            Search Account
+        </button>
+
+    </form>
+
+    <hr>
+    <hr>
+
+            <h3>🗑 Delete Account</h3>
+
+
+            <form action="/delete" method="get">
+
+
+        <label>Delete Account By ID</label>
+
+        <input
+                type="number"
+                name="id"
+                placeholder="Enter Account ID">
+
+        <button type="submit">
+            Delete Account
+        </button>
+
+    </form>
+    <hr>
+
+            <div class="card">
+
+                <h3>💰 Deposit Money</h3>
+
+                <form action="/deposit" method="post">
+
+                    <label>Account ID</label>
+
+                    <input
+                            type="number"
+                            name="id"
+                            placeholder="Enter Account ID">
+
+                    <label>Amount</label>
+
+                    <input
+                            type="number"
+                            step="0.01"
+                            name="amount"
+                            placeholder="Enter Amount">
+
+                    <button type="submit">
+
+                        Deposit Money
+
+                    </button>
+
+                </form>
+
+            </div>
+
+            <div class="card full-width">
+
+                <h3>💸 Transfer Money</h3>
+
+                <form action="/transfer" method="post">
+
+                    <label>From Account ID</label>
+
+                    <input
+                            type="number"
+                            name="fromId"
+                            placeholder="Sender Account">
+
+                    <label>To Account ID</label>
+
+                    <input
+                            type="number"
+                            name="toId"
+                            placeholder="Receiver Account">
+
+                    <label>Amount</label>
+
+                    <input
+                            type="number"
+                            step="0.01"
+                            name="amount"
+                            placeholder="Transfer Amount">
+
+                    <button type="submit">
+
+                        Transfer Money
+
+                    </button>
+
+                </form>
+
+            </div>
+
+    <!-- View All Accounts -->
+
+            <div class="card full-width">
+
+                <h3>📋 Customer Accounts</h3>
+
+                <form action="/accounts" method="get">
+
+                    <button type="submit">
+
+                        View All Accounts
+
+                    </button>
+
+                </form>
+
+            </div>
+
+    <!-- Single Account -->
+
+            <div class="card full-width" th:if="${account != null}">
+
+                <h3>👤 Account Details</h3>
+
+                <table>
+
+                    <tr>
+                        <th>Account ID</th>
+                        <td th:text="${account.id}"></td>
+                    </tr>
+
+                    <tr>
+                        <th>Holder Name</th>
+                        <td th:text="${account.accountHolderName}"></td>
+                    </tr>
+
+                    <tr>
+                        <th>Available Balance</th>
+                        <td th:text="${account.balance}"></td>
+                    </tr>
+
+                </table>
+
+            </div>
+
+    <!-- All Accounts -->
+
+            <p th:if="${accounts.isEmpty()}">
+
+                No Accounts Found.
+
+            </p>
+
+        <h3>All Accounts</h3>
+
+        <table>
+
+            <tr>
+                <th>ID</th>
+                <th>Account Holder</th>
+                <th>Balance</th>
+            </tr>
+
+            <tr th:each="acc : ${accounts}">
+
+                <td th:text="${acc.id}"></td>
+
+                <td th:text="${acc.accountHolderName}"></td>
+
+                <td th:text="${acc.balance}"></td>
+
+            </tr>
+
+        </table>
+
+    </div>
+
+</div>
+<hr>
+
+<form action="/" method="get">
+
+    <button type="submit">
+
+        Home
+
+    </button>
+
+</form>
+
+    <footer class="footer">
+
+        <hr>
+
+        <p>
+
+            Bank Fund Transfer System | Spring Boot | Thymeleaf | H2 Database
+
+        </p>
+
+        <p>
+
+            Developed by Mahesh S R--
+            https://linkedin.com/in/maheshraokashyap
+
+        </p>
+
+    </footer>
+
+</body>
+</html>
